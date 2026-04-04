@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Incidence &amp; Prevalence Calculator — EpiTools</title>
+  <meta name="description" content="Calculate incidence rates and prevalence with Poisson and Wilson confidence intervals. Free online epidemiology calculator by Dr. Nana Liu, PhD.">
+  <meta name="keywords" content="incidence rate calculator, prevalence calculator, Poisson confidence interval, Wilson score interval, epidemiology calculator">
+  <link rel="canonical" href="https://epitools.org/incidence-prevalence.html">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="container">
+      <a href="index.html" class="site-logo">
+        <svg viewBox="0 0 28 28" fill="none"><circle cx="14" cy="14" r="13" stroke="currentColor" stroke-width="2"/><path d="M8 14h12M14 8v12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        EpiTools
+      </a>
+      <div class="header-controls">
+        <nav class="header-nav">
+          <a href="sample-size.html">Sample Size</a>
+          <a href="power-analysis.html">Power</a>
+          <a href="nnt.html">NNT</a>
+          <a href="odds-ratio.html">OR/RR</a>
+          <a href="incidence-prevalence.html" class="active">Incidence</a>
+          <a href="chi-square.html">&chi;&sup2;</a>
+          <a href="meta-analysis.html">Meta</a>
+        </nav>
+        <button id="lang-toggle" class="lang-toggle">中文</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="page-header">
+    <div class="container-narrow">
+      <div class="breadcrumb"><a href="index.html">Home</a> / <span data-i18n="calc.incidence">Incidence & Prevalence</span></div>
+      <h1 data-i18n="ip.title">Incidence &amp; Prevalence Calculator</h1>
+      <p class="page-desc" data-i18n="ip.desc">Calculate incidence rates and prevalence with confidence intervals</p>
+    </div>
+  </div>
+
+  <main class="container-narrow">
+    <section class="calc-section">
+      <h2 data-i18n="common.inputs">Input Parameters</h2>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label data-i18n="ip.calc_type">Calculation Type</label>
+          <div class="radio-group">
+            <label><input type="radio" name="calctype" value="incidence" checked> <span data-i18n="ip.incidence_rate">Incidence Rate</span></label>
+            <label><input type="radio" name="calctype" value="prevalence"> <span data-i18n="ip.prevalence">Prevalence</span></label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Incidence inputs -->
+      <div id="incidence-inputs">
+        <div class="form-row">
+          <div class="form-group">
+            <label data-i18n="ip.new_cases">Number of New Cases</label>
+            <input type="number" id="newCases" value="45" min="0" step="1">
+          </div>
+          <div class="form-group">
+            <label data-i18n="ip.person_time">Person-Time at Risk</label>
+            <input type="number" id="personTime" value="10000" min="1" step="1">
+            <span class="hint">e.g., person-years</span>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label data-i18n="ip.multiplier">Rate Multiplier</label>
+            <select id="multiplier">
+              <option value="1">Per 1 (raw rate)</option>
+              <option value="1000">Per 1,000</option>
+              <option value="10000">Per 10,000</option>
+              <option value="100000" selected>Per 100,000</option>
+              <option value="1000000">Per 1,000,000</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Prevalence inputs -->
+      <div id="prevalence-inputs" style="display:none;">
+        <div class="form-row">
+          <div class="form-group">
+            <label data-i18n="ip.existing_cases">Number of Existing Cases</label>
+            <input type="number" id="existCases" value="120" min="0" step="1">
+          </div>
+          <div class="form-group">
+            <label data-i18n="ip.total_pop">Total Population</label>
+            <input type="number" id="totalPop" value="5000" min="1" step="1">
+          </div>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label data-i18n="common.confidence_level">Confidence Level</label>
+          <select id="confLevel">
+            <option value="0.90">90%</option>
+            <option value="0.95" selected>95%</option>
+            <option value="0.99">99%</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="btn-group">
+        <button class="btn btn-primary" id="btn-calculate" data-i18n="common.calculate">Calculate</button>
+        <button class="btn btn-secondary" id="btn-reset" data-i18n="common.reset">Reset</button>
+      </div>
+    </section>
+
+    <section class="results-panel" id="results">
+      <h2 data-i18n="common.results">Results</h2>
+
+      <div class="result-highlight">
+        <div class="big-number" id="result-main"></div>
+        <div class="big-label" id="result-main-label"></div>
+      </div>
+
+      <div id="results-rows"></div>
+
+      <div class="formula-box" id="formula-display"></div>
+      <div class="formula-box" id="steps-display"></div>
+
+      <div class="interpretation" id="interpretation"></div>
+
+      <div class="reference-box">
+        <strong data-i18n="common.reference">Reference:</strong>
+        <span data-i18n="ip.ref">Rothman, K.J., Greenland, S. & Lash, T.L. (2008). Modern Epidemiology, 3rd ed., Ch. 3.</span>
+      </div>
+    </section>
+
+    <div class="disclaimer" data-i18n="common.disclaimer">Disclaimer: This tool is for educational and research planning purposes.</div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p data-i18n="common.footer">&copy; 2024 EpiTools by Dr. Nana Liu, PhD</p>
+      <p class="footer-credits" data-i18n="common.footer_note">All calculations use textbook-standard formulas.</p>
+    </div>
+  </footer>
+
+  <script src="js/epi-math.js"></script>
+  <script src="js/i18n.js"></script>
+  <script>
+  document.addEventListener('DOMContentLoaded', () => {
+    I18n.init();
+
+    const typeRadios = document.querySelectorAll('input[name="calctype"]');
+    typeRadios.forEach(r => r.addEventListener('change', () => {
+      const isInc = document.querySelector('input[name="calctype"]:checked').value === 'incidence';
+      document.getElementById('incidence-inputs').style.display = isInc ? '' : 'none';
+      document.getElementById('prevalence-inputs').style.display = isInc ? 'none' : '';
+    }));
+
+    document.getElementById('btn-calculate').addEventListener('click', calculate);
+    document.getElementById('btn-reset').addEventListener('click', () => {
+      document.getElementById('results').classList.remove('visible');
+    });
+
+    function calculate() {
+      try {
+        const calcType = document.querySelector('input[name="calctype"]:checked').value;
+        const confLevel = parseFloat(document.getElementById('confLevel').value);
+        const alpha = 1 - confLevel;
+        const lang = I18n.getLang();
+
+        if (calcType === 'incidence') {
+          const cases = parseInt(document.getElementById('newCases').value);
+          const pt = parseFloat(document.getElementById('personTime').value);
+          const mult = parseFloat(document.getElementById('multiplier').value);
+
+          if (cases < 0) { alert('Cases must be non-negative.'); return; }
+          if (pt <= 0) { alert('Person-time must be positive.'); return; }
+
+          const rate = cases / pt;
+          const rateScaled = rate * mult;
+
+          // Exact Poisson CI
+          const ci = EpiMath.poissonCI(cases, alpha);
+          const ciLowerScaled = (ci.lower / pt) * mult;
+          const ciUpperScaled = (ci.upper / pt) * mult;
+
+          const multLabel = mult === 1 ? '' : ' per ' + mult.toLocaleString();
+
+          document.getElementById('result-main').textContent = EpiMath.formatNum(rateScaled, 2);
+          document.getElementById('result-main-label').textContent = (lang === 'zh' ? '发病率' : 'Incidence Rate') + multLabel;
+
+          document.getElementById('results-rows').innerHTML =
+            '<div class="result-row"><span class="result-label">' + (lang === 'zh' ? '新发病例数' : 'New Cases') + '</span><span class="result-value">' + cases + '</span></div>' +
+            '<div class="result-row"><span class="result-label">' + (lang === 'zh' ? '危险人时' : 'Person-Time at Risk') + '</span><span class="result-value">' + pt.toLocaleString() + '</span></div>' +
+            '<div class="result-row"><span class="result-label">' + (lang === 'zh' ? '原始率' : 'Raw Rate') + '</span><span class="result-value">' + EpiMath.formatNum(rate, 6) + '</span></div>' +
+            '<div class="result-row"><span class="result-label">' + (lang === 'zh' ? '率' : 'Rate') + multLabel + '</span><span class="result-value">' + EpiMath.formatNum(rateScaled, 2) + ' <span class="ci">(' + (confLevel*100) + '% CI: ' + EpiMath.formatNum(ciLowerScaled, 2) + ' to ' + EpiMath.formatNum(ciUpperScaled, 2) + ')</span></span></div>';
+
+          document.getElementById('formula-display').innerHTML =
+            '<div class="formula-title">' + I18n.t('common.formula_used') + '</div>' +
+            '<div class="formula-math">Incidence Rate = Number of new cases / Person-time at risk</div>' +
+            '<div class="formula-math">95% CI: Exact Poisson confidence interval</div>' +
+            '<div class="formula-math" style="font-size:0.9rem;">Lower = &chi;&sup2;<sub>2k, &alpha;/2</sub> / (2 &times; T), Upper = &chi;&sup2;<sub>2(k+1), 1&minus;&alpha;/2</sub> / (2 &times; T)</div>';
+
+          document.getElementById('steps-display').innerHTML =
+            '<div class="formula-title">' + I18n.t('common.step_by_step') + '</div>' +
+            '<div class="step">Rate = ' + cases + ' / ' + pt.toLocaleString() + ' = ' + EpiMath.formatNum(rate, 8) + '</div>' +
+            '<div class="step">Rate' + multLabel + ' = ' + EpiMath.formatNum(rate, 8) + ' &times; ' + mult.toLocaleString() + ' = ' + EpiMath.formatNum(rateScaled, 4) + '</div>' +
+            '<div class="step">Poisson exact CI for count: (' + EpiMath.formatNum(ci.lower, 4) + ', ' + EpiMath.formatNum(ci.upper, 4) + ')</div>' +
+            '<div class="step step-result">CI' + multLabel + ': (' + EpiMath.formatNum(ciLowerScaled, 2) + ', ' + EpiMath.formatNum(ciUpperScaled, 2) + ')</div>';
+
+          document.getElementById('interpretation').innerHTML = lang === 'zh'
+            ? '发病率为 <strong>' + EpiMath.formatNum(rateScaled, 2) + '</strong>' + multLabel + '（' + (confLevel*100) + '% CI: ' + EpiMath.formatNum(ciLowerScaled, 2) + ' &ndash; ' + EpiMath.formatNum(ciUpperScaled, 2) + '）。置信区间使用精确 Poisson 方法。'
+            : 'The incidence rate is <strong>' + EpiMath.formatNum(rateScaled, 2) + '</strong>' + multLabel + ' (' + (confLevel*100) + '% CI: ' + EpiMath.formatNum(ciLowerScaled, 2) + ' to ' + EpiMath.formatNum(ciUpperScaled, 2) + '). The CI uses the exact Poisson method.';
+
+        } else {
+          // Prevalence
+          const cases = parseInt(document.getElementById('existCases').value);
+          const pop = parseInt(document.getElementById('totalPop').value);
+
+          if (cases < 0) { alert('Cases must be non-negative.'); return; }
+          if (pop <= 0) { alert('Population must be positive.'); return; }
+          if (cases > pop) { alert('Cases cannot exceed population.'); return; }
+
+          const prev = cases / pop;
+          const prevPct = prev * 100;
+
+          // Wilson score CI
+          const ci = EpiMath.wilsonCI(prev, pop, alpha);
+
+          document.getElementById('result-main').textContent = prevPct.toFixed(2) + '%';
+          document.getElementById('result-main-label').textContent = lang === 'zh' ? '患病率' : 'Prevalence';
+
+          document.getElementById('results-rows').innerHTML =
+            '<div class="result-row"><span class="result-label">' + (lang === 'zh' ? '现有病例数' : 'Existing Cases') + '</span><span class="result-value">' + cases + '</span></div>' +
+            '<div class="result-row"><span class="result-label">' + (lang === 'zh' ? '总人口' : 'Total Population') + '</span><span class="result-value">' + pop.toLocaleString() + '</span></div>' +
+            '<div class="result-row"><span class="result-label">' + (lang === 'zh' ? '患病率' : 'Prevalence') + '</span><span class="result-value">' + prevPct.toFixed(2) + '% <span class="ci">(' + (confLevel*100) + '% CI: ' + (ci.lower*100).toFixed(2) + '% to ' + (ci.upper*100).toFixed(2) + '%)</span></span></div>' +
+            '<div class="result-row"><span class="result-label">' + (lang === 'zh' ? '患病率（比例）' : 'Prevalence (proportion)') + '</span><span class="result-value">' + EpiMath.formatNum(prev, 6) + '</span></div>';
+
+          const z = EpiMath.normalQuantile(1 - alpha/2);
+          document.getElementById('formula-display').innerHTML =
+            '<div class="formula-title">' + I18n.t('common.formula_used') + '</div>' +
+            '<div class="formula-math">Prevalence = Number of existing cases / Total population</div>' +
+            '<div class="formula-math">Wilson score CI:</div>' +
+            '<div class="formula-math" style="font-size:0.9rem;">(&hat;p + z&sup2;/(2n) &plusmn; z &times; &radic;[&hat;p(1&minus;&hat;p)/n + z&sup2;/(4n&sup2;)]) / (1 + z&sup2;/n)</div>';
+
+          document.getElementById('steps-display').innerHTML =
+            '<div class="formula-title">' + I18n.t('common.step_by_step') + '</div>' +
+            '<div class="step">&hat;p = ' + cases + ' / ' + pop + ' = ' + EpiMath.formatNum(prev, 6) + '</div>' +
+            '<div class="step">z = ' + EpiMath.formatNum(z, 4) + '</div>' +
+            '<div class="step">z&sup2;/(2n) = ' + EpiMath.formatNum(z*z/(2*pop), 6) + '</div>' +
+            '<div class="step">Denominator: 1 + z&sup2;/n = ' + EpiMath.formatNum(1 + z*z/pop, 6) + '</div>' +
+            '<div class="step step-result">Wilson CI: (' + (ci.lower*100).toFixed(2) + '%, ' + (ci.upper*100).toFixed(2) + '%)</div>';
+
+          document.getElementById('interpretation').innerHTML = lang === 'zh'
+            ? '患病率为 <strong>' + prevPct.toFixed(2) + '%</strong>（' + (confLevel*100) + '% CI: ' + (ci.lower*100).toFixed(2) + '% &ndash; ' + (ci.upper*100).toFixed(2) + '%）。置信区间使用 Wilson 评分法，对小样本和极端比例更为准确。'
+            : 'The prevalence is <strong>' + prevPct.toFixed(2) + '%</strong> (' + (confLevel*100) + '% CI: ' + (ci.lower*100).toFixed(2) + '% to ' + (ci.upper*100).toFixed(2) + '%). The CI uses the Wilson score method, which is more accurate for small samples and extreme proportions than the Wald method.';
+        }
+
+        document.getElementById('interpretation').className = 'interpretation';
+        document.getElementById('results').classList.add('visible');
+        document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+      } catch (err) {
+        alert('Calculation error: ' + err.message);
+      }
+    }
+  });
+  </script>
+</body>
+</html>

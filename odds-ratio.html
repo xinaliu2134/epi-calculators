@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Odds Ratio &amp; Relative Risk Calculator — EpiTools</title>
+  <meta name="description" content="Calculate Odds Ratio, Relative Risk, 95% CI, chi-square test, and Fisher's exact test from a 2x2 contingency table. Free epidemiology calculator.">
+  <meta name="keywords" content="odds ratio calculator, relative risk calculator, 2x2 table, chi-square test, Fisher exact test, epidemiology">
+  <link rel="canonical" href="https://epitools.org/odds-ratio.html">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="container">
+      <a href="index.html" class="site-logo">
+        <svg viewBox="0 0 28 28" fill="none"><circle cx="14" cy="14" r="13" stroke="currentColor" stroke-width="2"/><path d="M8 14h12M14 8v12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        EpiTools
+      </a>
+      <div class="header-controls">
+        <nav class="header-nav">
+          <a href="sample-size.html">Sample Size</a>
+          <a href="power-analysis.html">Power</a>
+          <a href="nnt.html">NNT</a>
+          <a href="odds-ratio.html" class="active">OR/RR</a>
+          <a href="incidence-prevalence.html">Incidence</a>
+          <a href="chi-square.html">&chi;&sup2;</a>
+          <a href="meta-analysis.html">Meta</a>
+        </nav>
+        <button id="lang-toggle" class="lang-toggle">中文</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="page-header">
+    <div class="container-narrow">
+      <div class="breadcrumb"><a href="index.html">Home</a> / <span data-i18n="calc.or_rr">Odds Ratio & Relative Risk</span></div>
+      <h1 data-i18n="or.title">Odds Ratio &amp; Relative Risk Calculator</h1>
+      <p class="page-desc" data-i18n="or.desc">Calculate OR, RR, and tests of association from a 2&times;2 table</p>
+    </div>
+  </div>
+
+  <main class="container-narrow">
+    <section class="calc-section">
+      <h2 data-i18n="common.inputs">Input Parameters</h2>
+
+      <p style="font-size:0.85rem; color:#718096; margin-bottom:1rem;">Enter counts in the 2&times;2 contingency table below:</p>
+
+      <table class="contingency-table">
+        <thead>
+          <tr>
+            <th></th>
+            <th data-i18n="or.disease_pos">Disease +</th>
+            <th data-i18n="or.disease_neg">Disease &minus;</th>
+            <th data-i18n="common.total">Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="row-label" data-i18n="or.exposed">Exposed</td>
+            <td><input type="number" id="cell-a" value="30" min="0" step="1"> <span style="font-size:0.75rem;color:#a0aec0;">(a)</span></td>
+            <td><input type="number" id="cell-b" value="70" min="0" step="1"> <span style="font-size:0.75rem;color:#a0aec0;">(b)</span></td>
+            <td id="row1-total" style="font-weight:600;">100</td>
+          </tr>
+          <tr>
+            <td class="row-label" data-i18n="or.unexposed">Unexposed</td>
+            <td><input type="number" id="cell-c" value="10" min="0" step="1"> <span style="font-size:0.75rem;color:#a0aec0;">(c)</span></td>
+            <td><input type="number" id="cell-d" value="90" min="0" step="1"> <span style="font-size:0.75rem;color:#a0aec0;">(d)</span></td>
+            <td id="row2-total" style="font-weight:600;">100</td>
+          </tr>
+          <tr>
+            <td class="row-label" data-i18n="common.total">Total</td>
+            <td id="col1-total" style="font-weight:600;">40</td>
+            <td id="col2-total" style="font-weight:600;">160</td>
+            <td id="grand-total" style="font-weight:700;">200</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="btn-group">
+        <button class="btn btn-primary" id="btn-calculate" data-i18n="common.calculate">Calculate</button>
+        <button class="btn btn-secondary" id="btn-reset" data-i18n="common.reset">Reset</button>
+      </div>
+    </section>
+
+    <section class="results-panel" id="results">
+      <h2 data-i18n="common.results">Results</h2>
+
+      <div class="result-row">
+        <span class="result-label" data-i18n="or.or_label">Odds Ratio (OR)</span>
+        <span class="result-value" id="result-or"></span>
+      </div>
+      <div class="result-row">
+        <span class="result-label" data-i18n="or.rr_label">Relative Risk (RR)</span>
+        <span class="result-value" id="result-rr"></span>
+      </div>
+      <div class="result-row">
+        <span class="result-label" data-i18n="or.chi2">Chi-Square Statistic</span>
+        <span class="result-value" id="result-chi2"></span>
+      </div>
+      <div class="result-row">
+        <span class="result-label" data-i18n="or.p_value">Chi-Square p-value</span>
+        <span class="result-value" id="result-pval"></span>
+      </div>
+      <div class="result-row">
+        <span class="result-label" data-i18n="or.fisher_p">Fisher's Exact p-value</span>
+        <span class="result-value" id="result-fisher"></span>
+      </div>
+
+      <div class="formula-box" id="formula-display"></div>
+      <div class="formula-box" id="steps-display"></div>
+
+      <div class="interpretation" id="interpretation"></div>
+
+      <div class="reference-box">
+        <strong data-i18n="common.reference">Reference:</strong>
+        <span data-i18n="or.ref">Rothman, K.J., Greenland, S. & Lash, T.L. (2008). Modern Epidemiology, 3rd ed.</span>
+      </div>
+    </section>
+
+    <div class="disclaimer" data-i18n="common.disclaimer">Disclaimer: This tool is for educational and research planning purposes.</div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p data-i18n="common.footer">&copy; 2024 EpiTools by Dr. Nana Liu, PhD</p>
+      <p class="footer-credits" data-i18n="common.footer_note">All calculations use textbook-standard formulas.</p>
+    </div>
+  </footer>
+
+  <script src="js/epi-math.js"></script>
+  <script src="js/i18n.js"></script>
+  <script>
+  document.addEventListener('DOMContentLoaded', () => {
+    I18n.init();
+
+    // Update totals on input change
+    const cells = ['cell-a','cell-b','cell-c','cell-d'];
+    cells.forEach(id => {
+      document.getElementById(id).addEventListener('input', updateTotals);
+    });
+    updateTotals();
+
+    function updateTotals() {
+      const a = parseInt(document.getElementById('cell-a').value) || 0;
+      const b = parseInt(document.getElementById('cell-b').value) || 0;
+      const c = parseInt(document.getElementById('cell-c').value) || 0;
+      const d = parseInt(document.getElementById('cell-d').value) || 0;
+      document.getElementById('row1-total').textContent = a + b;
+      document.getElementById('row2-total').textContent = c + d;
+      document.getElementById('col1-total').textContent = a + c;
+      document.getElementById('col2-total').textContent = b + d;
+      document.getElementById('grand-total').textContent = a + b + c + d;
+    }
+
+    document.getElementById('btn-calculate').addEventListener('click', calculate);
+    document.getElementById('btn-reset').addEventListener('click', () => {
+      document.getElementById('results').classList.remove('visible');
+    });
+
+    function calculate() {
+      try {
+        const a = parseInt(document.getElementById('cell-a').value);
+        const b = parseInt(document.getElementById('cell-b').value);
+        const c = parseInt(document.getElementById('cell-c').value);
+        const d = parseInt(document.getElementById('cell-d').value);
+
+        if ([a,b,c,d].some(x => isNaN(x) || x < 0)) { alert('All cells must be non-negative integers.'); return; }
+        const n = a + b + c + d;
+        if (n === 0) { alert('Table cannot be empty.'); return; }
+
+        const z = 1.96; // for 95% CI
+
+        // Odds Ratio
+        let OR, orLower, orUpper;
+        if (b === 0 || c === 0) {
+          // Add 0.5 correction for zero cells
+          const aa = a + 0.5, bb = b + 0.5, cc = c + 0.5, dd = d + 0.5;
+          OR = (aa * dd) / (bb * cc);
+          const lnOR = Math.log(OR);
+          const seLnOR = Math.sqrt(1/aa + 1/bb + 1/cc + 1/dd);
+          orLower = Math.exp(lnOR - z * seLnOR);
+          orUpper = Math.exp(lnOR + z * seLnOR);
+        } else {
+          OR = (a * d) / (b * c);
+          const lnOR = Math.log(OR);
+          const seLnOR = Math.sqrt(1/a + 1/b + 1/c + 1/d);
+          orLower = Math.exp(lnOR - z * seLnOR);
+          orUpper = Math.exp(lnOR + z * seLnOR);
+        }
+
+        // Relative Risk
+        const r1 = a + b; // row 1 total
+        const r2 = c + d; // row 2 total
+        let RR, rrLower, rrUpper;
+        if (r1 === 0 || r2 === 0) {
+          RR = NaN; rrLower = NaN; rrUpper = NaN;
+        } else {
+          const p1 = a / r1;
+          const p2 = c / r2;
+          if (p2 === 0) {
+            RR = Infinity; rrLower = NaN; rrUpper = NaN;
+          } else {
+            RR = p1 / p2;
+            const lnRR = Math.log(RR);
+            // SE(ln RR) = sqrt(1/a - 1/(a+b) + 1/c - 1/(c+d))
+            const seLnRR = Math.sqrt((a > 0 ? 1/a : 0) - 1/r1 + (c > 0 ? 1/c : 0) - 1/r2);
+            rrLower = Math.exp(lnRR - z * seLnRR);
+            rrUpper = Math.exp(lnRR + z * seLnRR);
+          }
+        }
+
+        // Chi-square (without correction)
+        const chi2 = n * Math.pow(a * d - b * c, 2) / ((a + b) * (c + d) * (a + c) * (b + d));
+        const pChi2 = EpiMath.chiSquarePValue(chi2, 1);
+
+        // Fisher's exact test
+        const fisherP = EpiMath.fisherExact(a, b, c, d);
+
+        // Display results
+        document.getElementById('result-or').innerHTML = EpiMath.formatNum(OR, 3) + ' <span class="ci">(95% CI: ' + EpiMath.formatNum(orLower, 3) + ' to ' + EpiMath.formatNum(orUpper, 3) + ')</span>';
+
+        if (isFinite(RR)) {
+          document.getElementById('result-rr').innerHTML = EpiMath.formatNum(RR, 3) + ' <span class="ci">(95% CI: ' + EpiMath.formatNum(rrLower, 3) + ' to ' + EpiMath.formatNum(rrUpper, 3) + ')</span>';
+        } else {
+          document.getElementById('result-rr').textContent = 'Undefined (zero in unexposed)';
+        }
+
+        document.getElementById('result-chi2').textContent = EpiMath.formatNum(chi2, 4);
+        document.getElementById('result-pval').textContent = pChi2 < 0.0001 ? '< 0.0001' : EpiMath.formatNum(pChi2, 6);
+        document.getElementById('result-fisher').textContent = fisherP < 0.0001 ? '< 0.0001' : EpiMath.formatNum(fisherP, 6);
+
+        // Formula
+        document.getElementById('formula-display').innerHTML =
+          '<div class="formula-title">' + I18n.t('common.formula_used') + '</div>' +
+          '<div class="formula-math">OR = (a &times; d) / (b &times; c)</div>' +
+          '<div class="formula-math">95% CI: exp(ln(OR) &plusmn; Z &times; &radic;(1/a + 1/b + 1/c + 1/d))</div>' +
+          '<div class="formula-math" style="margin-top:0.5rem;">RR = [a/(a+b)] / [c/(c+d)]</div>' +
+          '<div class="formula-math">95% CI: exp(ln(RR) &plusmn; Z &times; &radic;(1/a &minus; 1/(a+b) + 1/c &minus; 1/(c+d)))</div>' +
+          '<div class="formula-math" style="margin-top:0.5rem;">&chi;&sup2; = n(ad&minus;bc)&sup2; / [(a+b)(c+d)(a+c)(b+d)]</div>';
+
+        // Steps
+        document.getElementById('steps-display').innerHTML =
+          '<div class="formula-title">' + I18n.t('common.step_by_step') + '</div>' +
+          '<div class="step">a=' + a + ', b=' + b + ', c=' + c + ', d=' + d + ', n=' + n + '</div>' +
+          '<div class="step">OR = (' + a + '&times;' + d + ') / (' + b + '&times;' + c + ') = ' + (a*d) + ' / ' + (b*c) + ' = ' + EpiMath.formatNum(OR, 4) + '</div>' +
+          '<div class="step">ln(OR) = ' + EpiMath.formatNum(Math.log(OR), 4) + '</div>' +
+          '<div class="step">SE(ln OR) = &radic;(1/' + a + ' + 1/' + b + ' + 1/' + c + ' + 1/' + d + ') = ' + EpiMath.formatNum(Math.sqrt(1/a + 1/b + 1/c + 1/d), 4) + '</div>' +
+          (isFinite(RR) ? '<div class="step">RR = (' + a + '/' + r1 + ') / (' + c + '/' + r2 + ') = ' + EpiMath.formatNum(a/r1, 4) + ' / ' + EpiMath.formatNum(c/r2, 4) + ' = ' + EpiMath.formatNum(RR, 4) + '</div>' : '') +
+          '<div class="step">&chi;&sup2; = ' + n + ' &times; (' + a + '&times;' + d + ' &minus; ' + b + '&times;' + c + ')&sup2; / (' + r1 + '&times;' + r2 + '&times;' + (a+c) + '&times;' + (b+d) + ') = ' + EpiMath.formatNum(chi2, 4) + '</div>' +
+          '<div class="step step-result">p-value (&chi;&sup2;, df=1) = ' + (pChi2 < 0.0001 ? '< 0.0001' : EpiMath.formatNum(pChi2, 6)) + '</div>';
+
+        // Interpretation
+        const lang = I18n.getLang();
+        const sig = pChi2 < 0.05;
+        let interp;
+        if (lang === 'zh') {
+          interp = 'OR = ' + EpiMath.formatNum(OR, 2) + '，';
+          if (OR > 1) interp += '表示暴露组的疾病几率是未暴露组的 ' + EpiMath.formatNum(OR, 2) + ' 倍。';
+          else if (OR < 1) interp += '表示暴露对疾病有保护作用。';
+          else interp += '表示暴露与疾病无关联。';
+          interp += sig ? ' 卡方检验 p < 0.05，差异具有统计学意义。' : ' 卡方检验 p &ge; 0.05，差异无统计学意义。';
+          if (Math.min(a,b,c,d) < 5) interp += ' 由于存在小样本单元格（<5），建议使用 Fisher 精确检验。';
+        } else {
+          interp = 'OR = ' + EpiMath.formatNum(OR, 2) + '. ';
+          if (OR > 1) interp += 'The odds of disease are ' + EpiMath.formatNum(OR, 2) + ' times higher in the exposed group.';
+          else if (OR < 1) interp += 'Exposure appears protective against the outcome.';
+          else interp += 'No association between exposure and disease.';
+          interp += sig ? ' The chi-square test is statistically significant (p < 0.05).' : ' The chi-square test is not significant (p &ge; 0.05).';
+          if (Math.min(a,b,c,d) < 5) interp += ' Note: One or more cells have expected count < 5; Fisher\'s exact test is recommended.';
+        }
+        document.getElementById('interpretation').innerHTML = interp;
+        document.getElementById('interpretation').className = sig ? 'interpretation' : 'interpretation info';
+
+        document.getElementById('results').classList.add('visible');
+        document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+      } catch (err) {
+        alert('Calculation error: ' + err.message);
+      }
+    }
+  });
+  </script>
+</body>
+</html>

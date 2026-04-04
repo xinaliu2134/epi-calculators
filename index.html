@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EpiTools — Free Online Epidemiology Calculators</title>
+  <meta name="description" content="Free online epidemiology calculators: sample size, power analysis, NNT, odds ratio, relative risk, incidence, prevalence, chi-square, meta-analysis. By Dr. Nana Liu, PhD — Erasmus MC.">
+  <meta name="keywords" content="epidemiology calculators online free, sample size calculator, power analysis, NNT calculator, odds ratio calculator, relative risk, chi-square test, meta-analysis, biostatistics">
+  <meta name="author" content="Dr. Nana Liu, PhD — Erasmus MC University Medical Center Rotterdam">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://epitools.org/">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="EpiTools — Free Online Epidemiology Calculators">
+  <meta property="og:description" content="Professional epidemiology and biostatistics calculators with textbook-accurate formulas. Sample size, power analysis, NNT, OR/RR, chi-square, meta-analysis.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://epitools.org/">
+
+  <!-- JSON-LD Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "EpiTools",
+    "url": "https://epitools.org/",
+    "description": "Free online epidemiology and biostatistics calculators with textbook-accurate formulas.",
+    "author": {
+      "@type": "Person",
+      "name": "Dr. Nana Liu",
+      "honorificSuffix": "PhD",
+      "affiliation": {
+        "@type": "Organization",
+        "name": "Erasmus MC University Medical Center Rotterdam"
+      }
+    },
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": "https://epitools.org/?q={search_term_string}",
+      "query-input": "required name=search_term_string"
+    }
+  }
+  </script>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="site-header">
+    <div class="container">
+      <a href="index.html" class="site-logo">
+        <svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="14" cy="14" r="13" stroke="currentColor" stroke-width="2"/>
+          <path d="M8 14h12M14 8v12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        EpiTools
+      </a>
+      <div class="header-controls">
+        <nav class="header-nav">
+          <a href="sample-size.html" data-i18n="calc.sample_size">Sample Size</a>
+          <a href="power-analysis.html" data-i18n="calc.power">Power</a>
+          <a href="nnt.html">NNT</a>
+          <a href="odds-ratio.html">OR/RR</a>
+          <a href="incidence-prevalence.html" data-i18n="calc.incidence">Incidence</a>
+          <a href="chi-square.html">&chi;&sup2;</a>
+          <a href="meta-analysis.html">Meta</a>
+        </nav>
+        <button id="lang-toggle" class="lang-toggle">中文</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="container">
+      <h1 data-i18n="site.subtitle">Free Online Epidemiology &amp; Biostatistics Calculators</h1>
+      <p class="subtitle" data-i18n="landing.explore">Professional tools with textbook-accurate formulas, step-by-step calculations, and full references.</p>
+      <p class="credentials" data-i18n="site.credentials">By Dr. Nana Liu, PhD &mdash; Erasmus MC University Medical Center Rotterdam</p>
+    </div>
+  </section>
+
+  <!-- Calculator Grid -->
+  <main class="container">
+    <div class="calc-grid">
+
+      <!-- Sample Size -->
+      <article class="calc-card">
+        <div class="calc-card-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        </div>
+        <h3 data-i18n="calc.sample_size">Sample Size Calculator</h3>
+        <p data-i18n="calc.sample_size.desc">Calculate the required sample size for clinical trials comparing two proportions or two means.</p>
+        <a href="sample-size.html" class="card-link" data-i18n="card.open">Open Calculator &rarr;</a>
+      </article>
+
+      <!-- Power Analysis -->
+      <article class="calc-card">
+        <div class="calc-card-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        </div>
+        <h3 data-i18n="calc.power">Power Analysis</h3>
+        <p data-i18n="calc.power.desc">Given a sample size, calculate the statistical power of your study to detect a given effect.</p>
+        <a href="power-analysis.html" class="card-link" data-i18n="card.open">Open Calculator &rarr;</a>
+      </article>
+
+      <!-- NNT -->
+      <article class="calc-card">
+        <div class="calc-card-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M12 8v8M8 12h8"/></svg>
+        </div>
+        <h3 data-i18n="calc.nnt">NNT Calculator</h3>
+        <p data-i18n="calc.nnt.desc">Number Needed to Treat, Absolute Risk Reduction, and Relative Risk Reduction with confidence intervals.</p>
+        <a href="nnt.html" class="card-link" data-i18n="card.open">Open Calculator &rarr;</a>
+      </article>
+
+      <!-- Odds Ratio -->
+      <article class="calc-card">
+        <div class="calc-card-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+        </div>
+        <h3 data-i18n="calc.or_rr">Odds Ratio &amp; Relative Risk</h3>
+        <p data-i18n="calc.or_rr.desc">Calculate OR, RR, 95% CI, chi-square test, and Fisher's exact test from a 2&times;2 table.</p>
+        <a href="odds-ratio.html" class="card-link" data-i18n="card.open">Open Calculator &rarr;</a>
+      </article>
+
+      <!-- Incidence & Prevalence -->
+      <article class="calc-card">
+        <div class="calc-card-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+        </div>
+        <h3 data-i18n="calc.incidence">Incidence &amp; Prevalence</h3>
+        <p data-i18n="calc.incidence.desc">Calculate incidence rates, prevalence, and their confidence intervals with Poisson and Wilson methods.</p>
+        <a href="incidence-prevalence.html" class="card-link" data-i18n="card.open">Open Calculator &rarr;</a>
+      </article>
+
+      <!-- Chi-Square -->
+      <article class="calc-card">
+        <div class="calc-card-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>
+        </div>
+        <h3 data-i18n="calc.chi_square">Chi-Square Test</h3>
+        <p data-i18n="calc.chi_square.desc">Chi-square test of independence for contingency tables up to 5&times;5, with Yates correction and Cram&eacute;r's V.</p>
+        <a href="chi-square.html" class="card-link" data-i18n="card.open">Open Calculator &rarr;</a>
+      </article>
+
+      <!-- Meta-Analysis -->
+      <article class="calc-card">
+        <div class="calc-card-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+        </div>
+        <h3 data-i18n="calc.meta">Meta-Analysis Calculator</h3>
+        <p data-i18n="calc.meta.desc">Pool effect sizes using fixed-effect and random-effects models with forest plot, Q, and I&sup2; statistics.</p>
+        <a href="meta-analysis.html" class="card-link" data-i18n="card.open">Open Calculator &rarr;</a>
+      </article>
+
+    </div>
+
+    <div class="disclaimer" data-i18n="common.disclaimer">
+      Disclaimer: This tool is for educational and research planning purposes. Always consult a biostatistician for clinical trial design.
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <p data-i18n="common.footer">&copy; 2024 EpiTools by Dr. Nana Liu, PhD &mdash; Erasmus MC University Medical Center Rotterdam</p>
+      <p class="footer-credits" data-i18n="common.footer_note">All calculations use textbook-standard formulas. Results are verifiable against PASS, G*Power, and EpiInfo.</p>
+    </div>
+  </footer>
+
+  <script src="js/i18n.js"></script>
+  <script>document.addEventListener('DOMContentLoaded', () => I18n.init());</script>
+</body>
+</html>

@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Statistical Power Analysis Calculator — EpiTools</title>
+  <meta name="description" content="Calculate statistical power given sample size and effect size. Power curves for two proportions and two means. Free online tool by Dr. Nana Liu, PhD.">
+  <meta name="keywords" content="power analysis calculator, statistical power, power curve, effect size, sample size power">
+  <link rel="canonical" href="https://epitools.org/power-analysis.html">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="container">
+      <a href="index.html" class="site-logo">
+        <svg viewBox="0 0 28 28" fill="none"><circle cx="14" cy="14" r="13" stroke="currentColor" stroke-width="2"/><path d="M8 14h12M14 8v12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        EpiTools
+      </a>
+      <div class="header-controls">
+        <nav class="header-nav">
+          <a href="sample-size.html">Sample Size</a>
+          <a href="power-analysis.html" class="active">Power</a>
+          <a href="nnt.html">NNT</a>
+          <a href="odds-ratio.html">OR/RR</a>
+          <a href="incidence-prevalence.html">Incidence</a>
+          <a href="chi-square.html">&chi;&sup2;</a>
+          <a href="meta-analysis.html">Meta</a>
+        </nav>
+        <button id="lang-toggle" class="lang-toggle">中文</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="page-header">
+    <div class="container-narrow">
+      <div class="breadcrumb"><a href="index.html">Home</a> / <span data-i18n="calc.power">Power Analysis</span></div>
+      <h1 data-i18n="pa.title">Statistical Power Analysis</h1>
+      <p class="page-desc" data-i18n="pa.desc">Given sample size, calculate the power of your study</p>
+    </div>
+  </div>
+
+  <main class="container-narrow">
+    <section class="calc-section">
+      <h2 data-i18n="common.inputs">Input Parameters</h2>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label data-i18n="ss.design">Study Design</label>
+          <div class="radio-group">
+            <label><input type="radio" name="design" value="proportions" checked> <span data-i18n="ss.proportions">Two Proportions</span></label>
+            <label><input type="radio" name="design" value="means"> <span data-i18n="ss.means">Two Means</span></label>
+          </div>
+        </div>
+        <div class="form-group">
+          <label data-i18n="ss.test_type">Test Type</label>
+          <div class="radio-group">
+            <label><input type="radio" name="testtype" value="two-sided" checked> <span data-i18n="ss.two_sided">Two-sided</span></label>
+            <label><input type="radio" name="testtype" value="one-sided"> <span data-i18n="ss.one_sided">One-sided</span></label>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label data-i18n="common.significance_level">Significance Level (&alpha;)</label>
+          <select id="alpha">
+            <option value="0.01">0.01</option>
+            <option value="0.025">0.025</option>
+            <option value="0.05" selected>0.05</option>
+            <option value="0.10">0.10</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label data-i18n="pa.n">Sample Size Per Group (n)</label>
+          <input type="number" id="nPerGroup" value="100" min="2" step="1">
+        </div>
+      </div>
+
+      <div id="proportions-inputs">
+        <div class="form-row">
+          <div class="form-group">
+            <label data-i18n="ss.p1">Proportion in Control Group (p&#8321;)</label>
+            <input type="number" id="p1" value="0.30" min="0.001" max="0.999" step="0.01">
+          </div>
+          <div class="form-group">
+            <label data-i18n="ss.p2">Proportion in Treatment Group (p&#8322;)</label>
+            <input type="number" id="p2" value="0.20" min="0.001" max="0.999" step="0.01">
+          </div>
+        </div>
+      </div>
+
+      <div id="means-inputs" style="display:none;">
+        <div class="form-row">
+          <div class="form-group">
+            <label data-i18n="ss.delta">Minimum Detectable Difference (&delta;)</label>
+            <input type="number" id="delta" value="5" min="0.001" step="0.1">
+          </div>
+          <div class="form-group">
+            <label data-i18n="ss.sd">Standard Deviation (&sigma;)</label>
+            <input type="number" id="sd" value="10" min="0.001" step="0.1">
+          </div>
+        </div>
+      </div>
+
+      <div class="btn-group">
+        <button class="btn btn-primary" id="btn-calculate" data-i18n="common.calculate">Calculate</button>
+        <button class="btn btn-secondary" id="btn-reset" data-i18n="common.reset">Reset</button>
+      </div>
+    </section>
+
+    <section class="results-panel" id="results">
+      <h2 data-i18n="common.results">Results</h2>
+
+      <div class="result-highlight">
+        <div class="big-number" id="result-power"></div>
+        <div class="big-label" data-i18n="pa.power_result">Statistical Power</div>
+      </div>
+
+      <div class="formula-box" id="formula-display"></div>
+      <div class="formula-box" id="steps-display"></div>
+
+      <h3 class="mt-2" data-i18n="pa.power_curve">Power Curve</h3>
+      <div class="chart-container" id="power-curve-container"></div>
+
+      <div class="interpretation" id="interpretation"></div>
+
+      <div class="reference-box">
+        <strong data-i18n="common.reference">Reference:</strong>
+        <span data-i18n="ss.ref">Chow, S.C., Shao, J. & Wang, H. (2017). Sample Size Calculations in Clinical Research, 3rd ed.</span>
+      </div>
+    </section>
+
+    <div class="disclaimer" data-i18n="common.disclaimer">Disclaimer: This tool is for educational and research planning purposes.</div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p data-i18n="common.footer">&copy; 2024 EpiTools by Dr. Nana Liu, PhD</p>
+      <p class="footer-credits" data-i18n="common.footer_note">All calculations use textbook-standard formulas.</p>
+    </div>
+  </footer>
+
+  <script src="js/epi-math.js"></script>
+  <script src="js/i18n.js"></script>
+  <script>
+  document.addEventListener('DOMContentLoaded', () => {
+    I18n.init();
+
+    const designRadios = document.querySelectorAll('input[name="design"]');
+    designRadios.forEach(r => r.addEventListener('change', () => {
+      const isProp = document.querySelector('input[name="design"]:checked').value === 'proportions';
+      document.getElementById('proportions-inputs').style.display = isProp ? '' : 'none';
+      document.getElementById('means-inputs').style.display = isProp ? 'none' : '';
+    }));
+
+    document.getElementById('btn-calculate').addEventListener('click', calculate);
+    document.getElementById('btn-reset').addEventListener('click', () => {
+      document.getElementById('results').classList.remove('visible');
+    });
+
+    function computePower(design, n, alpha, testType, params) {
+      const zAlpha = testType === 'two-sided'
+        ? EpiMath.normalQuantile(1 - alpha / 2)
+        : EpiMath.normalQuantile(1 - alpha);
+
+      if (design === 'proportions') {
+        const { p1, p2 } = params;
+        // Power = Phi( |p1-p2| * sqrt(n) / sqrt(p1(1-p1) + p2(1-p2)) - Z_alpha )
+        // More precisely for two-proportion z-test:
+        // Power = Phi( (|p1-p2|*sqrt(n) - Z_alpha * sqrt(pbar*(1-pbar)*2)) / sqrt(p1*(1-p1) + p2*(1-p2)) )
+        // where pbar = (p1+p2)/2
+        // Simplified (equal allocation):
+        const diff = Math.abs(p1 - p2);
+        const se = Math.sqrt(p1 * (1 - p1) + p2 * (1 - p2));
+        const noncentrality = diff * Math.sqrt(n) / se;
+        const power = EpiMath.normalCDF(noncentrality - zAlpha);
+        return power;
+      } else {
+        const { delta, sd } = params;
+        // Power = Phi( |delta| * sqrt(n/2) / sigma - Z_alpha )
+        const noncentrality = Math.abs(delta) * Math.sqrt(n / 2) / sd;
+        const power = EpiMath.normalCDF(noncentrality - zAlpha);
+        return power;
+      }
+    }
+
+    function calculate() {
+      try {
+        const design = document.querySelector('input[name="design"]:checked').value;
+        const testType = document.querySelector('input[name="testtype"]:checked').value;
+        const alpha = parseFloat(document.getElementById('alpha').value);
+        const n = parseInt(document.getElementById('nPerGroup').value);
+
+        if (n < 2) { alert('Sample size must be at least 2.'); return; }
+
+        let params;
+        if (design === 'proportions') {
+          const p1 = parseFloat(document.getElementById('p1').value);
+          const p2 = parseFloat(document.getElementById('p2').value);
+          if (p1 <= 0 || p1 >= 1 || p2 <= 0 || p2 >= 1) { alert('Proportions must be between 0 and 1.'); return; }
+          if (Math.abs(p1 - p2) < 1e-10) { alert('p1 and p2 must differ.'); return; }
+          params = { p1, p2 };
+        } else {
+          const delta = parseFloat(document.getElementById('delta').value);
+          const sd = parseFloat(document.getElementById('sd').value);
+          if (delta <= 0 || sd <= 0) { alert('Delta and SD must be positive.'); return; }
+          params = { delta, sd };
+        }
+
+        const power = computePower(design, n, alpha, testType, params);
+        const powerPct = (power * 100).toFixed(1);
+
+        document.getElementById('result-power').textContent = powerPct + '%';
+
+        const zAlpha = testType === 'two-sided'
+          ? EpiMath.normalQuantile(1 - alpha / 2)
+          : EpiMath.normalQuantile(1 - alpha);
+
+        let formulaHTML, stepsHTML;
+        if (design === 'proportions') {
+          const { p1, p2 } = params;
+          const diff = Math.abs(p1 - p2);
+          const se = Math.sqrt(p1 * (1 - p1) + p2 * (1 - p2));
+          const nc = diff * Math.sqrt(n) / se;
+
+          formulaHTML = '<div class="formula-title">' + I18n.t('common.formula_used') + '</div>' +
+            '<div class="formula-math">Power = &Phi;(|p<sub>1</sub>&minus;p<sub>2</sub>| &times; &radic;n / &radic;[p<sub>1</sub>(1&minus;p<sub>1</sub>) + p<sub>2</sub>(1&minus;p<sub>2</sub>)] &minus; Z<sub>&alpha;</sub>)</div>';
+
+          stepsHTML = '<div class="formula-title">' + I18n.t('common.step_by_step') + '</div>' +
+            '<div class="step">|p<sub>1</sub>&minus;p<sub>2</sub>| = ' + EpiMath.formatNum(diff) + '</div>' +
+            '<div class="step">&radic;[p<sub>1</sub>(1&minus;p<sub>1</sub>) + p<sub>2</sub>(1&minus;p<sub>2</sub>)] = ' + EpiMath.formatNum(se) + '</div>' +
+            '<div class="step">Non-centrality = ' + EpiMath.formatNum(diff) + ' &times; &radic;' + n + ' / ' + EpiMath.formatNum(se) + ' = ' + EpiMath.formatNum(nc) + '</div>' +
+            '<div class="step">Z<sub>&alpha;</sub> = ' + EpiMath.formatNum(zAlpha) + '</div>' +
+            '<div class="step step-result">Power = &Phi;(' + EpiMath.formatNum(nc) + ' &minus; ' + EpiMath.formatNum(zAlpha) + ') = &Phi;(' + EpiMath.formatNum(nc - zAlpha) + ') = ' + EpiMath.formatNum(power, 4) + '</div>';
+        } else {
+          const { delta, sd } = params;
+          const nc = Math.abs(delta) * Math.sqrt(n / 2) / sd;
+
+          formulaHTML = '<div class="formula-title">' + I18n.t('common.formula_used') + '</div>' +
+            '<div class="formula-math">Power = &Phi;(|&delta;| &times; &radic;(n/2) / &sigma; &minus; Z<sub>&alpha;</sub>)</div>';
+
+          stepsHTML = '<div class="formula-title">' + I18n.t('common.step_by_step') + '</div>' +
+            '<div class="step">|&delta;| &times; &radic;(n/2) / &sigma; = ' + Math.abs(delta) + ' &times; &radic;(' + n + '/2) / ' + sd + ' = ' + EpiMath.formatNum(nc) + '</div>' +
+            '<div class="step">Z<sub>&alpha;</sub> = ' + EpiMath.formatNum(zAlpha) + '</div>' +
+            '<div class="step step-result">Power = &Phi;(' + EpiMath.formatNum(nc - zAlpha) + ') = ' + EpiMath.formatNum(power, 4) + '</div>';
+        }
+
+        document.getElementById('formula-display').innerHTML = formulaHTML;
+        document.getElementById('steps-display').innerHTML = stepsHTML;
+
+        // Interpretation
+        const lang = I18n.getLang();
+        let interpText;
+        if (power >= 0.8) {
+          interpText = lang === 'zh'
+            ? '检验效能为 <strong>' + powerPct + '%</strong>，达到了通常推荐的 80% 阈值。该样本量足以检测到指定的效应量。'
+            : 'The statistical power is <strong>' + powerPct + '%</strong>, meeting the commonly recommended 80% threshold. This sample size is adequate to detect the specified effect.';
+        } else {
+          interpText = lang === 'zh'
+            ? '检验效能为 <strong>' + powerPct + '%</strong>，低于通常推荐的 80%。考虑增加样本量以提高检验效能。'
+            : 'The statistical power is <strong>' + powerPct + '%</strong>, below the commonly recommended 80%. Consider increasing the sample size.';
+        }
+        document.getElementById('interpretation').innerHTML = interpText;
+        document.getElementById('interpretation').className = power >= 0.8 ? 'interpretation' : 'interpretation warning';
+
+        // Power curve
+        drawPowerCurve(design, alpha, testType, params, n, power);
+
+        document.getElementById('results').classList.add('visible');
+        document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      } catch (err) {
+        alert('Calculation error: ' + err.message);
+      }
+    }
+
+    function drawPowerCurve(design, alpha, testType, params, currentN, currentPower) {
+      const W = 600, H = 350;
+      const pad = { top: 30, right: 30, bottom: 50, left: 60 };
+      const plotW = W - pad.left - pad.right;
+      const plotH = H - pad.top - pad.bottom;
+
+      // Generate data points
+      const maxN = Math.max(currentN * 3, 50);
+      const points = [];
+      for (let ni = 5; ni <= maxN; ni += Math.max(1, Math.floor(maxN / 100))) {
+        const p = computePower(design, ni, alpha, testType, params);
+        points.push({ n: ni, power: p });
+      }
+
+      const xScale = (n) => pad.left + (n / maxN) * plotW;
+      const yScale = (p) => pad.top + (1 - p) * plotH;
+
+      // Build path
+      let pathD = 'M' + points.map(pt => xScale(pt.n) + ',' + yScale(pt.power)).join('L');
+
+      let svg = '<svg width="' + W + '" height="' + H + '" viewBox="0 0 ' + W + ' ' + H + '" xmlns="http://www.w3.org/2000/svg">';
+
+      // Grid lines
+      svg += '<rect x="' + pad.left + '" y="' + pad.top + '" width="' + plotW + '" height="' + plotH + '" fill="#f7fafc" stroke="#e2e8f0"/>';
+      for (let p = 0; p <= 1; p += 0.2) {
+        const y = yScale(p);
+        svg += '<line x1="' + pad.left + '" y1="' + y + '" x2="' + (W - pad.right) + '" y2="' + y + '" stroke="#e2e8f0" stroke-dasharray="4,4"/>';
+        svg += '<text x="' + (pad.left - 8) + '" y="' + (y + 4) + '" text-anchor="end" fill="#718096" font-size="11" font-family="Inter,sans-serif">' + (p * 100).toFixed(0) + '%</text>';
+      }
+
+      // 80% power line
+      const y80 = yScale(0.8);
+      svg += '<line x1="' + pad.left + '" y1="' + y80 + '" x2="' + (W - pad.right) + '" y2="' + y80 + '" stroke="#e53e3e" stroke-dasharray="6,3" stroke-width="1"/>';
+      svg += '<text x="' + (W - pad.right - 4) + '" y="' + (y80 - 6) + '" text-anchor="end" fill="#e53e3e" font-size="10" font-family="Inter,sans-serif">80% power</text>';
+
+      // X axis labels
+      for (let i = 0; i <= 5; i++) {
+        const ni = Math.round(maxN * i / 5);
+        const x = xScale(ni);
+        svg += '<text x="' + x + '" y="' + (H - pad.bottom + 20) + '" text-anchor="middle" fill="#718096" font-size="11" font-family="Inter,sans-serif">' + ni + '</text>';
+      }
+      svg += '<text x="' + (pad.left + plotW / 2) + '" y="' + (H - 5) + '" text-anchor="middle" fill="#4a5568" font-size="12" font-family="Inter,sans-serif">Sample size per group (n)</text>';
+      svg += '<text x="15" y="' + (pad.top + plotH / 2) + '" text-anchor="middle" fill="#4a5568" font-size="12" font-family="Inter,sans-serif" transform="rotate(-90,15,' + (pad.top + plotH / 2) + ')">Power</text>';
+
+      // Curve
+      svg += '<path d="' + pathD + '" fill="none" stroke="#2b6cb0" stroke-width="2.5"/>';
+
+      // Current point
+      const cx = xScale(currentN);
+      const cy = yScale(currentPower);
+      svg += '<circle cx="' + cx + '" cy="' + cy + '" r="5" fill="#2b6cb0" stroke="white" stroke-width="2"/>';
+      svg += '<text x="' + (cx + 8) + '" y="' + (cy - 8) + '" fill="#1a365d" font-size="11" font-weight="600" font-family="Inter,sans-serif">n=' + currentN + ' (' + (currentPower * 100).toFixed(1) + '%)</text>';
+
+      svg += '</svg>';
+      document.getElementById('power-curve-container').innerHTML = svg;
+    }
+  });
+  </script>
+</body>
+</html>

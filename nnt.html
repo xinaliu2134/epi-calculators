@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NNT Calculator — Number Needed to Treat — EpiTools</title>
+  <meta name="description" content="Calculate Number Needed to Treat (NNT), Absolute Risk Reduction (ARR), Relative Risk Reduction (RRR) with 95% confidence intervals. Free online calculator.">
+  <meta name="keywords" content="NNT calculator, number needed to treat, absolute risk reduction, relative risk reduction, ARR, RRR, NNH">
+  <link rel="canonical" href="https://epitools.org/nnt.html">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="container">
+      <a href="index.html" class="site-logo">
+        <svg viewBox="0 0 28 28" fill="none"><circle cx="14" cy="14" r="13" stroke="currentColor" stroke-width="2"/><path d="M8 14h12M14 8v12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        EpiTools
+      </a>
+      <div class="header-controls">
+        <nav class="header-nav">
+          <a href="sample-size.html">Sample Size</a>
+          <a href="power-analysis.html">Power</a>
+          <a href="nnt.html" class="active">NNT</a>
+          <a href="odds-ratio.html">OR/RR</a>
+          <a href="incidence-prevalence.html">Incidence</a>
+          <a href="chi-square.html">&chi;&sup2;</a>
+          <a href="meta-analysis.html">Meta</a>
+        </nav>
+        <button id="lang-toggle" class="lang-toggle">中文</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="page-header">
+    <div class="container-narrow">
+      <div class="breadcrumb"><a href="index.html">Home</a> / <span data-i18n="calc.nnt">NNT Calculator</span></div>
+      <h1 data-i18n="nnt.title">Number Needed to Treat (NNT) Calculator</h1>
+      <p class="page-desc" data-i18n="nnt.desc">Calculate NNT, ARR, and RRR with confidence intervals</p>
+    </div>
+  </div>
+
+  <main class="container-narrow">
+    <section class="calc-section">
+      <h2 data-i18n="common.inputs">Input Parameters</h2>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label data-i18n="nnt.events_treatment">Events in Treatment Group</label>
+          <input type="number" id="eTreat" value="15" min="0" step="1">
+        </div>
+        <div class="form-group">
+          <label data-i18n="nnt.n_treatment">Total in Treatment Group</label>
+          <input type="number" id="nTreat" value="100" min="1" step="1">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label data-i18n="nnt.events_control">Events in Control Group</label>
+          <input type="number" id="eCtrl" value="25" min="0" step="1">
+        </div>
+        <div class="form-group">
+          <label data-i18n="nnt.n_control">Total in Control Group</label>
+          <input type="number" id="nCtrl" value="100" min="1" step="1">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label data-i18n="common.confidence_level">Confidence Level</label>
+          <select id="confLevel">
+            <option value="0.90">90%</option>
+            <option value="0.95" selected>95%</option>
+            <option value="0.99">99%</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="btn-group">
+        <button class="btn btn-primary" id="btn-calculate" data-i18n="common.calculate">Calculate</button>
+        <button class="btn btn-secondary" id="btn-reset" data-i18n="common.reset">Reset</button>
+      </div>
+    </section>
+
+    <section class="results-panel" id="results">
+      <h2 data-i18n="common.results">Results</h2>
+
+      <div class="result-highlight">
+        <div class="big-number" id="result-nnt"></div>
+        <div class="big-label" id="result-nnt-label">NNT</div>
+      </div>
+
+      <div class="result-row">
+        <span class="result-label" data-i18n="nnt.risk_control">Risk in Control Group</span>
+        <span class="result-value" id="result-pc"></span>
+      </div>
+      <div class="result-row">
+        <span class="result-label" data-i18n="nnt.risk_treatment">Risk in Treatment Group</span>
+        <span class="result-value" id="result-pt"></span>
+      </div>
+      <div class="result-row">
+        <span class="result-label" data-i18n="nnt.arr">Absolute Risk Reduction (ARR)</span>
+        <span class="result-value" id="result-arr"></span>
+      </div>
+      <div class="result-row">
+        <span class="result-label" data-i18n="nnt.rrr">Relative Risk Reduction (RRR)</span>
+        <span class="result-value" id="result-rrr"></span>
+      </div>
+      <div class="result-row">
+        <span class="result-label" id="nnt-nnh-label">NNT</span>
+        <span class="result-value" id="result-nnt-detail"></span>
+      </div>
+
+      <div class="formula-box" id="formula-display"></div>
+      <div class="formula-box" id="steps-display"></div>
+
+      <div class="interpretation" id="interpretation"></div>
+
+      <div class="reference-box">
+        <strong data-i18n="common.reference">Reference:</strong>
+        <span data-i18n="nnt.ref">Altman, D.G. (1998). "Confidence intervals for the number needed to treat." BMJ, 317(7168), 1309-1312.</span>
+      </div>
+    </section>
+
+    <div class="disclaimer" data-i18n="common.disclaimer">Disclaimer: This tool is for educational and research planning purposes.</div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p data-i18n="common.footer">&copy; 2024 EpiTools by Dr. Nana Liu, PhD</p>
+      <p class="footer-credits" data-i18n="common.footer_note">All calculations use textbook-standard formulas.</p>
+    </div>
+  </footer>
+
+  <script src="js/epi-math.js"></script>
+  <script src="js/i18n.js"></script>
+  <script>
+  document.addEventListener('DOMContentLoaded', () => {
+    I18n.init();
+
+    document.getElementById('btn-calculate').addEventListener('click', calculate);
+    document.getElementById('btn-reset').addEventListener('click', () => {
+      document.getElementById('results').classList.remove('visible');
+    });
+
+    function calculate() {
+      try {
+        const eTreat = parseInt(document.getElementById('eTreat').value);
+        const nTreat = parseInt(document.getElementById('nTreat').value);
+        const eCtrl = parseInt(document.getElementById('eCtrl').value);
+        const nCtrl = parseInt(document.getElementById('nCtrl').value);
+        const confLevel = parseFloat(document.getElementById('confLevel').value);
+
+        if (eTreat > nTreat || eCtrl > nCtrl) { alert('Events cannot exceed total.'); return; }
+        if (nTreat < 1 || nCtrl < 1) { alert('Group sizes must be at least 1.'); return; }
+
+        const alpha = 1 - confLevel;
+        const z = EpiMath.normalQuantile(1 - alpha / 2);
+
+        const pTreat = eTreat / nTreat;
+        const pCtrl = eCtrl / nCtrl;
+
+        // ARR = pCtrl - pTreat (positive means treatment is better)
+        const ARR = pCtrl - pTreat;
+
+        // SE of ARR
+        const seARR = Math.sqrt(pTreat * (1 - pTreat) / nTreat + pCtrl * (1 - pCtrl) / nCtrl);
+
+        // CI for ARR
+        const arrLower = ARR - z * seARR;
+        const arrUpper = ARR + z * seARR;
+
+        // RRR = ARR / pCtrl
+        const RRR = pCtrl > 0 ? ARR / pCtrl : NaN;
+
+        // NNT = 1 / ARR
+        const isHarm = ARR < 0;
+        const NNT = ARR !== 0 ? 1 / Math.abs(ARR) : Infinity;
+
+        // NNT CI: 1/CI_upper(ARR) to 1/CI_lower(ARR)
+        // When CI for ARR crosses zero, NNT CI is complex (Altman 1998)
+        let nntCILower, nntCIUpper;
+        let nntCIText;
+
+        if (arrLower > 0) {
+          // Both CI bounds positive: straightforward NNT
+          nntCILower = 1 / arrUpper;
+          nntCIUpper = 1 / arrLower;
+          nntCIText = EpiMath.formatNum(nntCILower, 1) + ' to ' + EpiMath.formatNum(nntCIUpper, 1);
+        } else if (arrUpper < 0) {
+          // Both negative: NNH
+          nntCILower = 1 / Math.abs(arrLower);
+          nntCIUpper = 1 / Math.abs(arrUpper);
+          nntCIText = EpiMath.formatNum(nntCILower, 1) + ' to ' + EpiMath.formatNum(nntCIUpper, 1);
+        } else {
+          // CI crosses zero
+          nntCIText = I18n.getLang() === 'zh' ? 'CI 跨越零，NNT 不确定' : 'CI crosses zero; NNT indeterminate';
+        }
+
+        // Display
+        const nntDisplay = isFinite(NNT) ? Math.ceil(NNT) : '\u221e';
+        const nntLabel = isHarm ? 'NNH' : 'NNT';
+        document.getElementById('result-nnt').textContent = nntDisplay;
+        document.getElementById('result-nnt-label').textContent = nntLabel;
+        document.getElementById('nnt-nnh-label').textContent = nntLabel;
+
+        document.getElementById('result-pc').textContent = (pCtrl * 100).toFixed(1) + '%';
+        document.getElementById('result-pt').textContent = (pTreat * 100).toFixed(1) + '%';
+
+        const arrPct = (ARR * 100).toFixed(2);
+        const arrLPct = (arrLower * 100).toFixed(2);
+        const arrUPct = (arrUpper * 100).toFixed(2);
+        document.getElementById('result-arr').innerHTML = arrPct + '% <span class="ci">(' + (confLevel * 100) + '% CI: ' + arrLPct + '% to ' + arrUPct + '%)</span>';
+
+        const rrrPct = isFinite(RRR) ? (RRR * 100).toFixed(1) : 'N/A';
+        document.getElementById('result-rrr').textContent = rrrPct + '%';
+
+        document.getElementById('result-nnt-detail').innerHTML = nntDisplay + ' <span class="ci">(' + (confLevel * 100) + '% CI: ' + nntCIText + ')</span>';
+
+        // Formula
+        document.getElementById('formula-display').innerHTML =
+          '<div class="formula-title">' + I18n.t('common.formula_used') + '</div>' +
+          '<div class="formula-math">ARR = p<sub>control</sub> &minus; p<sub>treatment</sub></div>' +
+          '<div class="formula-math">NNT = 1 / |ARR|</div>' +
+          '<div class="formula-math">RRR = ARR / p<sub>control</sub></div>' +
+          '<div class="formula-math">95% CI for ARR: (p<sub>c</sub>&minus;p<sub>t</sub>) &plusmn; Z<sub>&alpha;/2</sub> &times; &radic;[p<sub>t</sub>(1&minus;p<sub>t</sub>)/n<sub>t</sub> + p<sub>c</sub>(1&minus;p<sub>c</sub>)/n<sub>c</sub>]</div>';
+
+        // Steps
+        document.getElementById('steps-display').innerHTML =
+          '<div class="formula-title">' + I18n.t('common.step_by_step') + '</div>' +
+          '<div class="step">p<sub>control</sub> = ' + eCtrl + '/' + nCtrl + ' = ' + EpiMath.formatNum(pCtrl) + '</div>' +
+          '<div class="step">p<sub>treatment</sub> = ' + eTreat + '/' + nTreat + ' = ' + EpiMath.formatNum(pTreat) + '</div>' +
+          '<div class="step">ARR = ' + EpiMath.formatNum(pCtrl) + ' &minus; ' + EpiMath.formatNum(pTreat) + ' = ' + EpiMath.formatNum(ARR) + '</div>' +
+          '<div class="step">SE(ARR) = &radic;[' + EpiMath.formatNum(pTreat) + '&times;' + EpiMath.formatNum(1 - pTreat) + '/' + nTreat + ' + ' + EpiMath.formatNum(pCtrl) + '&times;' + EpiMath.formatNum(1 - pCtrl) + '/' + nCtrl + '] = ' + EpiMath.formatNum(seARR) + '</div>' +
+          '<div class="step">Z<sub>&alpha;/2</sub> = ' + EpiMath.formatNum(z) + '</div>' +
+          '<div class="step">ARR CI: ' + EpiMath.formatNum(ARR) + ' &plusmn; ' + EpiMath.formatNum(z) + ' &times; ' + EpiMath.formatNum(seARR) + ' = (' + EpiMath.formatNum(arrLower) + ', ' + EpiMath.formatNum(arrUpper) + ')</div>' +
+          '<div class="step">RRR = ' + EpiMath.formatNum(ARR) + ' / ' + EpiMath.formatNum(pCtrl) + ' = ' + EpiMath.formatNum(RRR) + '</div>' +
+          '<div class="step step-result">' + nntLabel + ' = 1 / |' + EpiMath.formatNum(ARR) + '| = ' + EpiMath.formatNum(NNT, 2) + ' &rArr; ' + nntDisplay + '</div>';
+
+        // Interpretation
+        const lang = I18n.getLang();
+        let interp;
+        if (isHarm) {
+          interp = lang === 'zh'
+            ? '治疗组的风险<strong>高于</strong>对照组。NNH = <strong>' + nntDisplay + '</strong>，意味着每治疗 ' + nntDisplay + ' 名患者，就会有 1 人因治疗而受到额外伤害。'
+            : 'The treatment group has a <strong>higher</strong> risk than the control group. NNH = <strong>' + nntDisplay + '</strong>, meaning for every ' + nntDisplay + ' patients treated, one additional patient is harmed.';
+          document.getElementById('interpretation').className = 'interpretation warning';
+        } else if (ARR === 0) {
+          interp = lang === 'zh' ? '两组之间无差异。' : 'No difference between the two groups.';
+          document.getElementById('interpretation').className = 'interpretation info';
+        } else {
+          interp = lang === 'zh'
+            ? 'NNT = <strong>' + nntDisplay + '</strong>，意味着每治疗 ' + nntDisplay + ' 名患者，就有 1 人因治疗而额外获益。绝对风险降低 ' + arrPct + '%，相对风险降低 ' + rrrPct + '%。'
+            : 'NNT = <strong>' + nntDisplay + '</strong>, meaning for every ' + nntDisplay + ' patients treated, one additional patient benefits. Absolute risk reduction is ' + arrPct + '%, relative risk reduction is ' + rrrPct + '%.';
+          document.getElementById('interpretation').className = 'interpretation';
+        }
+        document.getElementById('interpretation').innerHTML = interp;
+
+        document.getElementById('results').classList.add('visible');
+        document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+      } catch (err) {
+        alert('Calculation error: ' + err.message);
+      }
+    }
+  });
+  </script>
+</body>
+</html>

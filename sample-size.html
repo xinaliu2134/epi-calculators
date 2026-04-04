@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sample Size Calculator for Clinical Trials — EpiTools</title>
+  <meta name="description" content="Calculate required sample size for clinical trials. Two-proportion and two-mean comparisons with step-by-step formulas. Free online tool by Dr. Nana Liu, PhD.">
+  <meta name="keywords" content="sample size calculator clinical trial, sample size two proportions, sample size two means, clinical trial design calculator">
+  <link rel="canonical" href="https://epitools.org/sample-size.html">
+  <meta property="og:title" content="Sample Size Calculator for Clinical Trials — EpiTools">
+  <meta property="og:description" content="Calculate required sample size for RCTs comparing two proportions or two means. Textbook formulas with step-by-step calculations.">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Sample Size Calculator for Clinical Trials",
+    "url": "https://epitools.org/sample-size.html",
+    "applicationCategory": "HealthApplication",
+    "operatingSystem": "Web Browser",
+    "author": { "@type": "Person", "name": "Dr. Nana Liu", "honorificSuffix": "PhD" }
+  }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="container">
+      <a href="index.html" class="site-logo">
+        <svg viewBox="0 0 28 28" fill="none"><circle cx="14" cy="14" r="13" stroke="currentColor" stroke-width="2"/><path d="M8 14h12M14 8v12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        EpiTools
+      </a>
+      <div class="header-controls">
+        <nav class="header-nav">
+          <a href="sample-size.html" class="active">Sample Size</a>
+          <a href="power-analysis.html">Power</a>
+          <a href="nnt.html">NNT</a>
+          <a href="odds-ratio.html">OR/RR</a>
+          <a href="incidence-prevalence.html">Incidence</a>
+          <a href="chi-square.html">&chi;&sup2;</a>
+          <a href="meta-analysis.html">Meta</a>
+        </nav>
+        <button id="lang-toggle" class="lang-toggle">中文</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="page-header">
+    <div class="container-narrow">
+      <div class="breadcrumb"><a href="index.html" data-i18n="site.home">Home</a> / <span data-i18n="calc.sample_size">Sample Size Calculator</span></div>
+      <h1 data-i18n="ss.title">Sample Size Calculator for Clinical Trials</h1>
+      <p class="page-desc" data-i18n="ss.desc">Calculate the required sample size for two-group comparisons</p>
+    </div>
+  </div>
+
+  <main class="container-narrow">
+    <!-- Input Section -->
+    <section class="calc-section">
+      <h2 data-i18n="common.inputs">Input Parameters</h2>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label data-i18n="ss.design">Study Design</label>
+          <div class="radio-group">
+            <label><input type="radio" name="design" value="proportions" checked> <span data-i18n="ss.proportions">Two Proportions</span></label>
+            <label><input type="radio" name="design" value="means"> <span data-i18n="ss.means">Two Means</span></label>
+          </div>
+        </div>
+        <div class="form-group">
+          <label data-i18n="ss.test_type">Test Type</label>
+          <div class="radio-group">
+            <label><input type="radio" name="testtype" value="two-sided" checked> <span data-i18n="ss.two_sided">Two-sided</span></label>
+            <label><input type="radio" name="testtype" value="one-sided"> <span data-i18n="ss.one_sided">One-sided</span></label>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label data-i18n="common.significance_level">Significance Level (&alpha;)</label>
+          <select id="alpha">
+            <option value="0.01">0.01</option>
+            <option value="0.025">0.025</option>
+            <option value="0.05" selected>0.05</option>
+            <option value="0.10">0.10</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label data-i18n="common.power">Power (1&minus;&beta;)</label>
+          <select id="power">
+            <option value="0.80" selected>80%</option>
+            <option value="0.85">85%</option>
+            <option value="0.90">90%</option>
+            <option value="0.95">95%</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label data-i18n="ss.ratio">Allocation Ratio (n&#8322;/n&#8321;)</label>
+          <input type="number" id="ratio" value="1" min="0.1" max="10" step="0.1">
+        </div>
+      </div>
+
+      <!-- Proportions inputs -->
+      <div id="proportions-inputs">
+        <div class="form-row">
+          <div class="form-group">
+            <label data-i18n="ss.p1">Proportion in Control Group (p&#8321;)</label>
+            <input type="number" id="p1" value="0.30" min="0.001" max="0.999" step="0.01">
+            <span class="hint">e.g., 0.30 for 30%</span>
+          </div>
+          <div class="form-group">
+            <label data-i18n="ss.p2">Proportion in Treatment Group (p&#8322;)</label>
+            <input type="number" id="p2" value="0.20" min="0.001" max="0.999" step="0.01">
+            <span class="hint">e.g., 0.20 for 20%</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Means inputs -->
+      <div id="means-inputs" style="display:none;">
+        <div class="form-row">
+          <div class="form-group">
+            <label data-i18n="ss.delta">Minimum Detectable Difference (&delta;)</label>
+            <input type="number" id="delta" value="5" min="0.001" step="0.1">
+          </div>
+          <div class="form-group">
+            <label data-i18n="ss.sd">Standard Deviation (&sigma;)</label>
+            <input type="number" id="sd" value="10" min="0.001" step="0.1">
+          </div>
+        </div>
+      </div>
+
+      <div class="btn-group">
+        <button class="btn btn-primary" id="btn-calculate" data-i18n="common.calculate">Calculate</button>
+        <button class="btn btn-secondary" id="btn-reset" data-i18n="common.reset">Reset</button>
+      </div>
+    </section>
+
+    <!-- Results -->
+    <section class="results-panel" id="results">
+      <h2 data-i18n="common.results">Results</h2>
+
+      <div class="result-highlight">
+        <div class="big-number" id="result-n"></div>
+        <div class="big-label" data-i18n="ss.n_per_group">Sample Size Per Group</div>
+      </div>
+
+      <div class="result-row">
+        <span class="result-label" data-i18n="ss.n_per_group">Sample Size Per Group</span>
+        <span class="result-value" id="result-n1"></span>
+      </div>
+      <div class="result-row" id="row-n2" style="display:none;">
+        <span class="result-label">n&#8322;</span>
+        <span class="result-value" id="result-n2"></span>
+      </div>
+      <div class="result-row">
+        <span class="result-label" data-i18n="ss.n_total">Total Sample Size</span>
+        <span class="result-value" id="result-total"></span>
+      </div>
+
+      <!-- Formula -->
+      <div class="formula-box" id="formula-display"></div>
+
+      <!-- Step by step -->
+      <div class="formula-box" id="steps-display"></div>
+
+      <div class="interpretation" id="interpretation"></div>
+
+      <div class="reference-box">
+        <strong data-i18n="common.reference">Reference:</strong>
+        <span data-i18n="ss.ref">Chow, S.C., Shao, J. & Wang, H. (2017). Sample Size Calculations in Clinical Research, 3rd ed.</span>
+        <br><em data-i18n="ss.match_note">Results should match PASS, G*Power, or nQuery for the same parameters.</em>
+      </div>
+    </section>
+
+    <div class="disclaimer" data-i18n="common.disclaimer">
+      Disclaimer: This tool is for educational and research planning purposes. Always consult a biostatistician for clinical trial design.
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p data-i18n="common.footer">&copy; 2024 EpiTools by Dr. Nana Liu, PhD</p>
+      <p class="footer-credits" data-i18n="common.footer_note">All calculations use textbook-standard formulas.</p>
+    </div>
+  </footer>
+
+  <script src="js/epi-math.js"></script>
+  <script src="js/i18n.js"></script>
+  <script>
+  document.addEventListener('DOMContentLoaded', () => {
+    I18n.init();
+
+    const designRadios = document.querySelectorAll('input[name="design"]');
+    const propInputs = document.getElementById('proportions-inputs');
+    const meanInputs = document.getElementById('means-inputs');
+
+    designRadios.forEach(r => r.addEventListener('change', () => {
+      const isProp = document.querySelector('input[name="design"]:checked').value === 'proportions';
+      propInputs.style.display = isProp ? '' : 'none';
+      meanInputs.style.display = isProp ? 'none' : '';
+    }));
+
+    document.getElementById('btn-calculate').addEventListener('click', calculate);
+    document.getElementById('btn-reset').addEventListener('click', () => {
+      document.getElementById('results').classList.remove('visible');
+    });
+
+    function calculate() {
+      try {
+        const design = document.querySelector('input[name="design"]:checked').value;
+        const testType = document.querySelector('input[name="testtype"]:checked').value;
+        const alpha = parseFloat(document.getElementById('alpha').value);
+        const power = parseFloat(document.getElementById('power').value);
+        const ratio = parseFloat(document.getElementById('ratio').value);
+
+        // Z-scores
+        const zAlpha = testType === 'two-sided'
+          ? EpiMath.normalQuantile(1 - alpha / 2)
+          : EpiMath.normalQuantile(1 - alpha);
+        const zBeta = EpiMath.normalQuantile(power);
+
+        let n1, n2, nTotal;
+        let formulaHTML, stepsHTML;
+
+        if (design === 'proportions') {
+          const p1 = parseFloat(document.getElementById('p1').value);
+          const p2 = parseFloat(document.getElementById('p2').value);
+
+          if (p1 <= 0 || p1 >= 1 || p2 <= 0 || p2 >= 1) {
+            alert('Proportions must be between 0 and 1 (exclusive).');
+            return;
+          }
+          if (Math.abs(p1 - p2) < 1e-10) {
+            alert('p1 and p2 must be different.');
+            return;
+          }
+
+          // Formula: n = (Z_α/2 + Z_β)² × [p1(1-p1) + p2(1-p2)] / (p1-p2)²
+          // For unequal allocation: n1 = n_base × (1 + 1/k) / 2 where k = ratio
+          const zSum = zAlpha + zBeta;
+          const zSum2 = zSum * zSum;
+          const var1 = p1 * (1 - p1);
+          const var2 = p2 * (1 - p2);
+          const diff2 = (p1 - p2) * (p1 - p2);
+
+          if (ratio === 1) {
+            // Equal allocation
+            const nRaw = zSum2 * (var1 + var2) / diff2;
+            n1 = Math.ceil(nRaw);
+            n2 = n1;
+          } else {
+            // Unequal allocation: n1 = (Z_α + Z_β)² × [p1(1-p1) + p2(1-p2)/k] / (p1-p2)²
+            const nRaw1 = zSum2 * (var1 + var2 / ratio) / diff2;
+            n1 = Math.ceil(nRaw1);
+            n2 = Math.ceil(n1 * ratio);
+          }
+          nTotal = n1 + n2;
+
+          formulaHTML = '<div class="formula-title">' + I18n.t('common.formula_used') + '</div>' +
+            '<div class="formula-math">' +
+            'n = (Z<sub>&alpha;/2</sub> + Z<sub>&beta;</sub>)&sup2; &times; [p<sub>1</sub>(1&minus;p<sub>1</sub>) + p<sub>2</sub>(1&minus;p<sub>2</sub>)' +
+            (ratio !== 1 ? '/k' : '') +
+            '] / (p<sub>1</sub>&minus;p<sub>2</sub>)&sup2;</div>';
+
+          stepsHTML = '<div class="formula-title">' + I18n.t('common.step_by_step') + '</div>' +
+            '<div class="step">Z<sub>&alpha;' + (testType === 'two-sided' ? '/2' : '') + '</sub> = ' + EpiMath.formatNum(zAlpha, 4) +
+            ' (for &alpha; = ' + alpha + (testType === 'two-sided' ? ', two-sided' : ', one-sided') + ')</div>' +
+            '<div class="step">Z<sub>&beta;</sub> = ' + EpiMath.formatNum(zBeta, 4) + ' (for power = ' + (power * 100) + '%)</div>' +
+            '<div class="step">p<sub>1</sub>(1&minus;p<sub>1</sub>) = ' + p1 + ' &times; ' + (1 - p1) + ' = ' + EpiMath.formatNum(var1) + '</div>' +
+            '<div class="step">p<sub>2</sub>(1&minus;p<sub>2</sub>) = ' + p2 + ' &times; ' + (1 - p2) + ' = ' + EpiMath.formatNum(var2) + '</div>' +
+            '<div class="step">(p<sub>1</sub>&minus;p<sub>2</sub>)&sup2; = (' + EpiMath.formatNum(p1 - p2) + ')&sup2; = ' + EpiMath.formatNum(diff2) + '</div>' +
+            '<div class="step">(Z<sub>&alpha;</sub> + Z<sub>&beta;</sub>)&sup2; = (' + EpiMath.formatNum(zAlpha) + ' + ' + EpiMath.formatNum(zBeta) + ')&sup2; = ' + EpiMath.formatNum(zSum2) + '</div>' +
+            '<div class="step step-result">n = ' + EpiMath.formatNum(zSum2) + ' &times; ' +
+            (ratio !== 1 ? '(' + EpiMath.formatNum(var1) + ' + ' + EpiMath.formatNum(var2) + '/' + ratio + ')' : '(' + EpiMath.formatNum(var1) + ' + ' + EpiMath.formatNum(var2) + ')') +
+            ' / ' + EpiMath.formatNum(diff2) + '</div>' +
+            '<div class="step step-result">n = ' + EpiMath.formatNum(zSum2 * (var1 + var2 / (ratio === 1 ? 1 : ratio)) / diff2, 2) + ' &rArr; ' + n1 + ' (rounded up)</div>';
+
+        } else {
+          // Two means
+          const delta = parseFloat(document.getElementById('delta').value);
+          const sd = parseFloat(document.getElementById('sd').value);
+
+          if (delta <= 0 || sd <= 0) {
+            alert('Delta and standard deviation must be positive.');
+            return;
+          }
+
+          // Formula: n = (Z_α/2 + Z_β)² × 2σ² / δ²
+          // For unequal allocation: n1 = (Z + Z)² × σ²(1 + 1/k) / δ²
+          const zSum = zAlpha + zBeta;
+          const zSum2 = zSum * zSum;
+          const sd2 = sd * sd;
+          const delta2 = delta * delta;
+
+          if (ratio === 1) {
+            const nRaw = zSum2 * 2 * sd2 / delta2;
+            n1 = Math.ceil(nRaw);
+            n2 = n1;
+          } else {
+            const nRaw1 = zSum2 * sd2 * (1 + 1 / ratio) / delta2;
+            n1 = Math.ceil(nRaw1);
+            n2 = Math.ceil(n1 * ratio);
+          }
+          nTotal = n1 + n2;
+
+          formulaHTML = '<div class="formula-title">' + I18n.t('common.formula_used') + '</div>' +
+            '<div class="formula-math">n = (Z<sub>&alpha;/2</sub> + Z<sub>&beta;</sub>)&sup2; &times; ' +
+            (ratio !== 1 ? '&sigma;&sup2;(1 + 1/k)' : '2&sigma;&sup2;') +
+            ' / &delta;&sup2;</div>';
+
+          stepsHTML = '<div class="formula-title">' + I18n.t('common.step_by_step') + '</div>' +
+            '<div class="step">Z<sub>&alpha;' + (testType === 'two-sided' ? '/2' : '') + '</sub> = ' + EpiMath.formatNum(zAlpha, 4) + '</div>' +
+            '<div class="step">Z<sub>&beta;</sub> = ' + EpiMath.formatNum(zBeta, 4) + '</div>' +
+            '<div class="step">&sigma;&sup2; = ' + sd + '&sup2; = ' + EpiMath.formatNum(sd2) + '</div>' +
+            '<div class="step">&delta;&sup2; = ' + delta + '&sup2; = ' + EpiMath.formatNum(delta2) + '</div>' +
+            '<div class="step">(Z<sub>&alpha;</sub> + Z<sub>&beta;</sub>)&sup2; = ' + EpiMath.formatNum(zSum2) + '</div>' +
+            '<div class="step step-result">n = ' + EpiMath.formatNum(zSum2) + ' &times; ' +
+            (ratio !== 1 ? EpiMath.formatNum(sd2) + '(1 + 1/' + ratio + ')' : '2 &times; ' + EpiMath.formatNum(sd2)) +
+            ' / ' + EpiMath.formatNum(delta2) + '</div>' +
+            '<div class="step step-result">n = ' + EpiMath.formatNum(zSum2 * sd2 * (ratio === 1 ? 2 : (1 + 1 / ratio)) / delta2, 2) + ' &rArr; ' + n1 + ' (rounded up)</div>';
+        }
+
+        // Show results
+        document.getElementById('result-n').textContent = n1;
+        document.getElementById('result-n1').textContent = 'n\u2081 = ' + n1;
+
+        if (ratio !== 1) {
+          document.getElementById('row-n2').style.display = '';
+          document.getElementById('result-n2').textContent = 'n\u2082 = ' + n2;
+        } else {
+          document.getElementById('row-n2').style.display = 'none';
+        }
+
+        document.getElementById('result-total').textContent = nTotal;
+        document.getElementById('formula-display').innerHTML = formulaHTML;
+        document.getElementById('steps-display').innerHTML = stepsHTML;
+
+        const interpLang = I18n.getLang();
+        document.getElementById('interpretation').innerHTML = interpLang === 'zh'
+          ? '要检测到此效应量，在显著性水平 &alpha; = ' + alpha + '、检验效能 ' + (power * 100) + '% 下，' +
+            (ratio === 1 ? '每组需要 <strong>' + n1 + '</strong> 名受试者' : '对照组需要 <strong>' + n1 + '</strong> 名、治疗组需要 <strong>' + n2 + '</strong> 名受试者') +
+            '，总共 <strong>' + nTotal + '</strong> 名。'
+          : 'To detect this effect size with &alpha; = ' + alpha + ' and ' + (power * 100) + '% power, you need ' +
+            (ratio === 1 ? '<strong>' + n1 + '</strong> participants per group' : '<strong>' + n1 + '</strong> in the control group and <strong>' + n2 + '</strong> in the treatment group') +
+            ', for a total of <strong>' + nTotal + '</strong>.';
+
+        document.getElementById('results').classList.add('visible');
+        document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+      } catch (err) {
+        alert('Calculation error: ' + err.message);
+      }
+    }
+  });
+  </script>
+</body>
+</html>
